@@ -253,6 +253,7 @@ print_spaces(int spaces)
     }
 }
 
+/*
 static void
 tree_print_internal_old(tree_t tree, int spaces)
     // MODIFIES: cout
@@ -270,6 +271,7 @@ tree_print_internal_old(tree_t tree, int spaces)
         cout << " )\n";
     }
 }
+*/
 
 static void
 tree_print_internal(tree_t tree, int spaces)
