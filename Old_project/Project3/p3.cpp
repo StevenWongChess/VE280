@@ -4,10 +4,18 @@ using namespace std;
 
 int main(int argc, char const *argv[])
 {
+	// Usage: ./p3 <species-summary> <world-file> <rounds> [v|verbose]
 	try{
-		string summary_dir = argv[1];
-		string world_dir = argv[2];
-		int rounds = atoi(argv[3]);
+		if (argc < 4){
+			error_t error;
+			error.op = 1;
+			throw error;
+		}
+		if (atoi(argv[3]) < 0){
+			error_t error;
+			error.op = 2;
+			throw error;
+		}
 
 		bool print_mode = false; 
 		// true means verbose, while false is concise
@@ -16,26 +24,19 @@ int main(int argc, char const *argv[])
 			if (print_flag == "v" || print_flag == "verbose")
 				print_mode = true;
 		}
-		ifstream summary_if;
-		ifstream world_if;
-		summary_if.open(argv[1]);
-		world_if.open(argv[2]);
 
-		
-
-		print_world(, rounds, print_mode);
-
-		summary_if.close();
-		world_if.close();
+		world_t world;
+		initialize_world(world);
+		read_species(world, argv[1]);
+		read_world(world, argv[2]);
+		run_game(world, atoi(argv[3]), print_mode);
+		test_read_success(world);
 	}
-	catch(...){
-		//error_print();
+	catch(error_t error){
+		print_error(error);
 	}
-
 	return 0;
 }
-
-
 
 
 
