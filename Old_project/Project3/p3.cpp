@@ -30,7 +30,7 @@ int main(int argc, char const *argv[])
 		read_species(world, argv[1]);
 		read_world(world, argv[2]);
 		run_game(world, atoi(argv[3]), print_mode);
-		test_read_success(world);
+		//test_read_success(world);
 	}
 	catch(error_t error){
 		print_error(error);

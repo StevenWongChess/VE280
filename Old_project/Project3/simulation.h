@@ -10,6 +10,8 @@
 #include <cassert>
 #include "world_type.h"
 
+const int NUM_DIRECTIONS = 4;
+
 typedef struct error_type{
 	error_type():
 		op(-1), str1(""), str2(""), grid(nullptr), creatures(nullptr){
@@ -32,7 +34,14 @@ void read_world(world_t &world, string world_dir);
 species_t *wao(world_t &world, string kind);
 direction_t trans(string l);
 void run_game(world_t &world, int rounds, bool print_mode);
-void print_world(const world_t &world, int rounds, bool print_mode);
+void print_grid(const grid_t &grid, bool print_mode);
+void action(creature_t &creature, grid_t &grid);
+point_t front(const creature_t &creature);
+void jump(creature_t &creature, bool flag);
+bool ifwall(const creature_t &creature, const grid_t &grid);
+bool ifempty(const creature_t &creature, const grid_t &grid);
+bool ifenemy(const creature_t &creature, const grid_t &grid);
+bool ifsame(const creature_t &creature, const grid_t &grid);
 
 void test_read_success(const world_t &world);
 void print_species(const species_t &species);

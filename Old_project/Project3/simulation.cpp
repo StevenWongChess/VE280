@@ -3,57 +3,59 @@ using namespace std;
 
 void print_error(const error_t &error){
 	switch(error.op){
-		case 1:
-			cout << "Error: Missing arguments!\n"
-			     << "Usage: ./p3 <species-summary> <world-file> <rounds> [v|verbose]\n";
-			break;
-		case 2:
-			cout << "Error: Number of simulation rounds is negative!\n";
-			break;
-		case 3:
-			cout << "Error: Cannot open file " << error.str1 << "!\n";
-			break;
-		case 4:
-			cout << "Error: Too many species!\n"
-			 	 << "Maximal number of species is " << MAXSPECIES << ".\n";
-			break;
-		case 5:
-			cout << "Error: Too many instructions for species " << error.str1 << "!\n"
-				 << "Maximal number of instructions is " << MAXPROGRAM << ".\n";
-			break;
-		case 6:
-			cout << "Error: Instruction " << error.str1 << " is not recognized!\n";
-			break;
-		case 7:
-			cout << "Error: Too many creatures!\n" 
-				 << "Maximal number of creatures is " << MAXCREATURES <<".\n";
-			break;
-		case 8:
-			cout << "Error: Species " << error.str1 << " not found!\n";
-			break;
-		case 9:
-			cout << "Error: Direction " << error.str1 << " is not recognized!\n";
-			break;
-		case 10:
-			cout << "Error: The grid height is illegal!\n";
-			break;
-		case 11:
-			cout << "Error: The grid width is illegal!\n";
-			break;
-		case 12:
-			cout << "Error: Creature ";
-			print_creature_error(error.creatures);
-			cout << " is out of bound!\n";
-			cout << "The grid size is " << error.grid->height 
-				 << "-by-" << error.grid->width << ".\n";
-			break;
-		case 13:
-			cout << "Error: Creature ";
-			print_creature_error(error.creatures_later);
-			cout << " overlaps with creature ";
-			print_creature_error(error.creatures);
-			cout << "!\n";
-			break;
+	case 1:
+		cout << "Error: Missing arguments!\n"
+		     << "Usage: ./p3 <species-summary> <world-file> <rounds> [v|verbose]\n";
+		break;
+	case 2:
+		cout << "Error: Number of simulation rounds is negative!\n";
+		break;
+	case 3:
+		cout << "Error: Cannot open file " << error.str1 << "!\n";
+		break;
+	case 4:
+		cout << "Error: Too many species!\n"
+		 	 << "Maximal number of species is " << MAXSPECIES << ".\n";
+		break;
+	case 5:
+		cout << "Error: Too many instructions for species " << error.str1 << "!\n"
+			 << "Maximal number of instructions is " << MAXPROGRAM << ".\n";
+		break;
+	case 6:
+		cout << "Error: Instruction " << error.str1 << " is not recognized!\n";
+		break;
+	case 7:
+		cout << "Error: Too many creatures!\n" 
+			 << "Maximal number of creatures is " << MAXCREATURES <<".\n";
+		break;
+	case 8:
+		cout << "Error: Species " << error.str1 << " not found!\n";
+		break;
+	case 9:
+		cout << "Error: Direction " << error.str1 << " is not recognized!\n";
+		break;
+	case 10:
+		cout << "Error: The grid height is illegal!\n";
+		break;
+	case 11:
+		cout << "Error: The grid width is illegal!\n";
+		break;
+	case 12:
+		cout << "Error: Creature ";
+		print_creature_error(error.creatures);
+		cout << " is out of bound!\n";
+		cout << "The grid size is " << error.grid->height 
+			 << "-by-" << error.grid->width << ".\n";
+		break;
+	case 13:
+		cout << "Error: Creature ";
+		print_creature_error(error.creatures_later);
+		cout << " overlaps with creature ";
+		print_creature_error(error.creatures);
+		cout << "!\n";
+		break;
+	default:
+		break;
 	}
 }
 
@@ -234,19 +236,116 @@ direction_t trans(string l){
 }
 
 void run_game(world_t &world, int rounds, bool print_mode){
-	print_world(world, -1, print_mode);
+	cout << "Initial state\n";
+	print_grid(world.grid);
+	//print_grid(world.grid, print_mode);
 	for(int i = 0; i < rounds; i++){
+		cout << "Round " << i + 1 << endl;
 		for(int j = 0; j < world.numCreatures; j++){
-
+			action(world.creatures[j], world.grid);		
 		}
-		print_world();
+		print_grid(world.grid);
+		//print_grid(world.grid, print_mode);
 	}
 }
 
-void print_world(const world_t &world, int rounds, bool print_mode){
+void print_grid(const grid_t &grid, bool print_mode){
 
 }
 
+void action(creature_t &creature, grid_t &grid){
+	bool flag = true;
+	while(flag){
+		switch (creature.species->program[creature.programID].op){
+		case HOP:
+			if(ifempty(creature, grid)){
+				grid.squares[front(creature).r][front(creature).c] = &creature;
+				grid.squares[creature.location.r][creature.location.c] = nullptr;
+				creature.location = front(creature);
+			}
+			jump(creature, false);
+			flag = false;
+			break;
+		case LEFT:
+			creature.direction = static_cast<direction_t>((creature.direction - 1) % NUM_DIRECTIONS);
+			jump(creature, false);
+			flag = false; 
+			break;
+		case RIGHT:
+			creature.direction = static_cast<direction_t>((creature.direction + 1) % NUM_DIRECTIONS); 
+			jump(creature, false);
+			flag = false;
+			break;
+		case INFECT:
+			if(ifenemy(creature, grid)){
+				grid.squares[front(creature).r][front(creature).c]->species = creature.species;
+				grid.squares[front(creature).r][front(creature).c]->programID = 0;
+			}
+			jump(creature, false);
+			flag = false;
+			break;
+		case IFEMPTY:
+			jump(creature, ifempty(creature, grid));	
+			break;
+		case IFWALL:
+			jump(creature, ifwall(creature, grid));
+			break;
+		case IFENEMY:
+			jump(creature, ifenemy(creature, grid));
+			break;
+		case IFSAME:
+			jump(creature, ifsame(creature, grid));
+			break;
+		case GO:
+			jump(creature, true);
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+point_t front(const creature_t &creature){
+	direction_t dir = creature.direction;
+	point_t pt = creature.location;
+	point_t pt_front = pt;
+	if (dir == EAST){
+		pt_front.c ++;
+	}
+	if (dir == SOUTH){
+		pt_front.r ++;
+	}
+	if (dir == WEST){
+		pt_front.c --;
+	}
+	if (dir == NORTH){
+		pt_front.r --;
+	}
+	return pt_front;
+}
+
+void jump(creature_t &creature, bool flag){
+	creature.programID = flag ? (creature.species->program[creature.programID].address - 1) : (creature.programID + 1);
+}
+
+bool ifwall(const creature_t &creature, const grid_t &grid){
+	return front(creature).r < 0 
+		|| front(creature).r >= grid.height
+		|| front(creature).c < 0 
+		|| front(creature).c >= grid.width;
+}
+
+bool ifempty(const creature_t &creature, const grid_t &grid){
+	return !ifwall(creature, grid) && grid.squares[front(creature).r][front(creature).c] == nullptr;
+}
+
+bool ifenemy(const creature_t &creature, const grid_t &grid){
+	return !ifempty(creature, grid) && creature.species != grid.squares[front(creature).r][front(creature).c]->species;
+}
+
+bool ifsame(const creature_t &creature, const grid_t &grid){
+	return !ifempty(creature, grid) && creature.species == grid.squares[front(creature).r][front(creature).c]->species;
+}
 
 /************************ test *********************************/
 
