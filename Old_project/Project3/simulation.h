@@ -33,9 +33,12 @@ opcode_t trans_(string tmp);
 void read_world(world_t &world, string world_dir);
 species_t *wao(world_t &world, string kind);
 direction_t trans(string l);
+
 void run_game(world_t &world, int rounds, bool print_mode);
-void print_grid(const grid_t &grid, bool print_mode);
-void action(creature_t &creature, grid_t &grid);
+void print_grid(const grid_t &grid);
+void print_creature_short(const creature_t *creature);
+
+void action(creature_t &creature, grid_t &grid, bool print_mode);
 point_t front(const creature_t &creature);
 void jump(creature_t &creature, bool flag);
 bool ifwall(const creature_t &creature, const grid_t &grid);
@@ -44,9 +47,9 @@ bool ifenemy(const creature_t &creature, const grid_t &grid);
 bool ifsame(const creature_t &creature, const grid_t &grid);
 
 void test_read_success(const world_t &world);
-void print_species(const species_t &species);
-void print_creatures(const creature_t &creatures);
-void print_grid(const grid_t &grid);
+void test_print_species(const species_t &species);
+void test_print_creatures(const creature_t &creatures);
+void test_print_grid(const grid_t &grid);
 
 void initialize_world(world_t &world);
 void initialize_species(species_t &species);

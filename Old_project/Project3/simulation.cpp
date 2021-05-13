@@ -1,6 +1,8 @@
 #include "simulation.h"
 using namespace std;
 
+/************** error handle *******************/
+
 void print_error(const error_t &error){
 	switch(error.op){
 	case 1:
@@ -66,6 +68,8 @@ void print_creature_error(const creature_t *creatures){
 		 << " " << creatures->location.c
 		 << ")";
 }
+
+/************** read file *****************/
 
 void read_species(world_t &world, string summary_dir){
 	ifstream summary_if;
@@ -235,27 +239,68 @@ direction_t trans(string l){
 	throw error;
 }
 
+/***************** run game *****************/
+
 void run_game(world_t &world, int rounds, bool print_mode){
 	cout << "Initial state\n";
 	print_grid(world.grid);
-	//print_grid(world.grid, print_mode);
 	for(int i = 0; i < rounds; i++){
 		cout << "Round " << i + 1 << endl;
 		for(int j = 0; j < world.numCreatures; j++){
-			action(world.creatures[j], world.grid);		
+			action(world.creatures[j], world.grid, print_mode);
+			if(print_mode){
+				print_grid(world.grid);
+			}
 		}
-		print_grid(world.grid);
-		//print_grid(world.grid, print_mode);
+		if(!print_mode){
+			print_grid(world.grid);
+		}
 	}
 }
 
-void print_grid(const grid_t &grid, bool print_mode){
-
+void print_grid(const grid_t &grid){
+	for(int i = 0; i < grid.height; i++){
+		for(int j = 0; j < grid.width; j++){
+			if (grid.squares[i][j] == nullptr){
+				cout <<	"____ ";
+			}
+			else{
+				print_creature_short(grid.squares[i][j]);
+			}
+		}
+		cout << endl;
+	}
 }
 
-void action(creature_t &creature, grid_t &grid){
+void print_creature_short(const creature_t *creature){
+	cout << creature->species->name.substr(0,2) << "_" 
+		 << directShortName[creature->direction] << " ";
+}
+
+void action(creature_t &creature, grid_t &grid, bool print_mode){
+	cout << "Creature ";
+	print_creature_error(&creature);
+	cout << " takes action:";
+	if (print_mode){
+		cout << endl;
+	}
 	bool flag = true;
 	while(flag){
+		if(print_mode){
+			instruction_t tmp = creature.species->program[creature.programID];
+			cout << "Instruction " << creature.programID + 1
+				 << ": " << opName[tmp.op];
+			if(tmp.op > 3){
+				cout << " " << tmp.address;
+			}
+			cout << endl;
+		}
+		else{
+			instruction_t tmp = creature.species->program[creature.programID];
+			if (tmp.op <= 3){
+				cout << " " << opName[tmp.op] << endl;
+			}
+		}
 		switch (creature.species->program[creature.programID].op){
 		case HOP:
 			if(ifempty(creature, grid)){
@@ -267,7 +312,7 @@ void action(creature_t &creature, grid_t &grid){
 			flag = false;
 			break;
 		case LEFT:
-			creature.direction = static_cast<direction_t>((creature.direction - 1) % NUM_DIRECTIONS);
+			creature.direction = static_cast<direction_t>((creature.direction + 3) % NUM_DIRECTIONS);
 			jump(creature, false);
 			flag = false; 
 			break;
@@ -308,20 +353,19 @@ void action(creature_t &creature, grid_t &grid){
 point_t front(const creature_t &creature){
 	direction_t dir = creature.direction;
 	point_t pt = creature.location;
-	point_t pt_front = pt;
 	if (dir == EAST){
-		pt_front.c ++;
+		pt.c ++;
 	}
 	if (dir == SOUTH){
-		pt_front.r ++;
+		pt.r ++;
 	}
 	if (dir == WEST){
-		pt_front.c --;
+		pt.c --;
 	}
 	if (dir == NORTH){
-		pt_front.r --;
+		pt.r --;
 	}
-	return pt_front;
+	return pt;
 }
 
 void jump(creature_t &creature, bool flag){
@@ -336,15 +380,15 @@ bool ifwall(const creature_t &creature, const grid_t &grid){
 }
 
 bool ifempty(const creature_t &creature, const grid_t &grid){
-	return !ifwall(creature, grid) && grid.squares[front(creature).r][front(creature).c] == nullptr;
+	return (!ifwall(creature, grid)) && grid.squares[front(creature).r][front(creature).c] == nullptr;
 }
 
 bool ifenemy(const creature_t &creature, const grid_t &grid){
-	return !ifempty(creature, grid) && creature.species != grid.squares[front(creature).r][front(creature).c]->species;
+	return (!ifwall(creature, grid)) && grid.squares[front(creature).r][front(creature).c] != nullptr && creature.species != grid.squares[front(creature).r][front(creature).c]->species;
 }
 
 bool ifsame(const creature_t &creature, const grid_t &grid){
-	return !ifempty(creature, grid) && creature.species == grid.squares[front(creature).r][front(creature).c]->species;
+	return (!ifwall(creature, grid)) && grid.squares[front(creature).r][front(creature).c] != nullptr && creature.species == grid.squares[front(creature).r][front(creature).c]->species;
 }
 
 /************************ test *********************************/
@@ -352,16 +396,16 @@ bool ifsame(const creature_t &creature, const grid_t &grid){
 void test_read_success(const world_t &world){
 	cout << world.numSpecies << " species in the world\n";
 	for(int i = 0; i < world.numSpecies; i++){
-		//print_species(world.species[i]);
+		//test_print_species(world.species[i]);
 	}
 	cout << world.numCreatures << " creatures in the world\n";
 	for(int i = 0; i < world.numCreatures; i++){
-		print_creatures(world.creatures[i]);
+		test_print_creatures(world.creatures[i]);
 	}
-	print_grid(world.grid);
+	test_print_grid(world.grid);
 }
 
-void print_species(const species_t &species){
+void test_print_species(const species_t &species){
 	cout << "species name is " << species.name
 		 << ", program size is " << species.programSize << endl;
 	for(int i = 0; i < species.programSize; i ++){
@@ -369,21 +413,21 @@ void print_species(const species_t &species){
 	}
 }	
 
-void print_creatures(const creature_t &creatures){
+void test_print_creatures(const creature_t &creatures){
 	cout << "creature location is (" << creatures.location.r << "," 
 		 << creatures.location.c << "), " 
 		 << "direction is " << directName[creatures.direction] << ", ";
 	// if(creatures.species != NULL)
-	// 	print_species(*creatures.species);
+	// 	test_print_species(*creatures.species);
 	cout << "program id is " << creatures.programID << endl;
 }
 
-void print_grid(const grid_t &grid){
+void test_print_grid(const grid_t &grid){
 	cout << "grid size is " << grid.height << "*" << grid.width << endl;
 	for(int i = 0; i < grid.height; i++){
 		for(int j = 0; j < grid.width; j++){
 			if (grid.squares[i][j] != nullptr)
-				print_creatures(*grid.squares[i][j]);
+				test_print_creatures(*grid.squares[i][j]);
 		}
 	}
 }
