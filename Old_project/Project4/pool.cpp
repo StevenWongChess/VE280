@@ -8,35 +8,43 @@ Piece & Pool::getUnusedPiece(int index){
 	return pieces[index];
 }
 
-Pool(){
-	for()
+Pool::Pool(){
+	for(int i = 0; i < NP; i++){
+		pieces[i] = Piece(static_cast<Height>(i/8), static_cast<Color>((i%8)/4),
+						  static_cast<Shape>((i%4)/2), static_cast<Top>(i%2) );
+	}
 }
-// EFFECTS: creates a pool of the 16 unused Quarto pieces
-// "unused" means "not placed on the board"
 
 Piece & Pool::getUnusedPiece(Height h, Color c, Shape s, Top t){
-	
-
+	return getUnusedPiece(8 * h + 4 * c + 2 * s + t);
 }
-// EFFECTS: return the reference to a piece "p" given its attributes
-//          throw UsedPieceException if "p" is placed on the board
 
 Piece & Pool::getUnusedPiece(const std::string &in){
-
+	int num = static_cast<int>(in[0] == 'T') * 8
+			+ static_cast<int>(in[1] == 'E') * 4
+			+ static_cast<int>(in[2] == 'Q') * 2
+			+ static_cast<int>(in[3] == 'O');
+	return getUnusedPiece(num);
 }
-// EFFECTS: return the reference to a piece "p" given its encoding
-//          throw UsedPieceException if "p" is placed on the board
-// see file "quarto.h/cpp" for the encoding of each attribute
-// e.g., "SEQO" encodes a piece that is short, sepia, square, and solid
 
-std::string Pool::toString() const;
-// EFFECTS: returns a string that lists all the unused pieces
-// preceded by string "Available:\n" if the list is not empty
-//          returns the empty string otherwise
-// e.g., when the game starts, the returned string would print as follows:
-// Available:
-// SB SB SB SB SE SE SE SE TB TB TB TB TE TE TE TE 
-// CH CO QH QO CH CO QH QO CH CO QH QO CH CO QH QO
-//
-// Note that all the 4-character strings have been split over two
-// lines (i.e., SBCH is the first piece, SBCO is the second...)
+std::string Pool::toString() const{
+	std::string prompt = "Available:\n";
+	std::string first_line = "";
+	std::string second_line = "";
+	for(int i = 0; i < NP; i++){
+		if(!pieces[i].isUsed()){
+			first_line += pieces[i].toString().substr(0,2) + " ";
+			second_line += pieces[i].toString().substr(2,2) + " ";
+		}
+	}
+	if(first_line != ""){
+		first_line += "\n";
+		second_line += "\n";
+	}
+	return prompt + first_line + second_line;
+}
+
+
+
+
+
