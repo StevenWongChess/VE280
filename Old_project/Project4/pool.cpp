@@ -28,7 +28,7 @@ Piece & Pool::getUnusedPiece(const std::string &in){
 }
 
 std::string Pool::toString() const{
-	std::string prompt = "Available:\n";
+	std::string prompt = "";
 	std::string first_line = "";
 	std::string second_line = "";
 	for(int i = 0; i < NP; i++){
@@ -38,6 +38,7 @@ std::string Pool::toString() const{
 		}
 	}
 	if(first_line != ""){
+		prompt = "Available:\n";
 		first_line += "\n";
 		second_line += "\n";
 	}
