@@ -20,6 +20,12 @@ Piece & Pool::getUnusedPiece(Height h, Color c, Shape s, Top t){
 }
 
 Piece & Pool::getUnusedPiece(const std::string &in){
+	if (in.length() != 4 || (in[0] != 'S' && in[0] != 'T') || 
+							(in[1] != 'B' && in[1] != 'E') || 
+							(in[2] != 'C' && in[2] != 'Q') ||
+							(in[3] != 'H' && in[3] != 'O')){
+		throw InvalidInputException(in);
+	}
 	int num = static_cast<int>(in[0] == 'T') * 8
 			+ static_cast<int>(in[1] == 'E') * 4
 			+ static_cast<int>(in[2] == 'Q') * 2

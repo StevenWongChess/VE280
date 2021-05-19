@@ -34,12 +34,40 @@ void Board::place(Piece &p, Square &sq){
 // Variadic Template and Parameter Pack 
 // https://tjsw.medium.com/(chaoshandechao)-c-variadic-template-parameter-pack-d76c0a4ffcdd
 
-bool SameAttributes(){
-	
+static bool funH(const Piece &p, const Square &a){
+	return p.compareHeight(a.getPiece());
 }
 
-bool SameRow(const Piece &p, const Square &sq, Square a, Square b, Square c, Square d){
+static bool funC(const Piece &p, const Square &a){
+	return p.compareColor(a.getPiece());
+}
 
+static bool funS(const Piece &p, const Square &a){
+	return p.compareShape(a.getPiece());
+}
+
+static bool funT(const Piece &p, const Square &a){
+	return p.compareTop(a.getPiece());
+}
+
+typedef bool (*comp)(const Piece&, const Square&);
+
+bool SameAttribute(comp fun, const Piece &p, const Square &sq, const Square &a){
+	return (sq.getV() == a.getV() && sq.getH() == a.getH()) ? 
+			true /*a.isEmpty()*/ : (!a.isEmpty() && fun(p, a));
+}
+
+bool SameAttributes(comp fun, const Piece &p, const Square &sq, const Square &a, 
+					const Square &b, const Square &c, const Square &d){
+	return SameAttribute(fun, p, sq, a) && SameAttribute(fun, p, sq, b) &&
+			SameAttribute(fun, p, sq, c) && SameAttribute(fun, p, sq, d);
+}
+
+bool SameRow(const Piece &p, const Square &sq, const Square &a, 
+			const Square &b, const Square &c, const Square &d){
+	//comp funH_ = funH;
+	return SameAttributes(funH, p, sq, a, b, c, d) || SameAttributes(funC, p, sq, a, b, c, d) ||
+		   SameAttributes(funS, p, sq, a, b, c, d) || SameAttributes(funT, p, sq, a, b, c, d);
 }
 
 bool Board::isWinning(const Piece &p, const Square &sq){
@@ -48,16 +76,8 @@ bool Board::isWinning(const Piece &p, const Square &sq){
 	return SameRow(p, sq, grid[v][0], grid[v][1], grid[v][2], grid[v][3]) ||
 		   SameRow(p, sq, grid[0][h], grid[1][h], grid[2][h], grid[3][h]) ||
 		(sq.isOnFirstDiagonal() && SameRow(p, sq, grid[0][0], grid[1][1], grid[2][2], grid[3][3])) ||
-		(sq.isOnSecondDiagonal() && SameRow(p, sq, grid[0][3], grid[1][2], grid[2][1], grid[3][0]))
+		(sq.isOnSecondDiagonal() && SameRow(p, sq, grid[0][3], grid[1][2], grid[2][1], grid[3][0]));
 }
-// REQUIRES: if "p" is used, then it is already placed on "sq".
-//           Otherwise, "sq" is empty.
-// EFFECTS: return true if piece "p" on square "sq" yields a
-// winning position (i.e., 4 pieces with at least one common 
-// attribute, which are aligned horizontally, vertically, or 
-// diagonally
-// REMARK: "p" may or may not have been placed on "sq"
-// (Please think about why), which may be empty.
 
 std::string Board::toString() const{
 	std::string str = "    1    2    3    4\n";
