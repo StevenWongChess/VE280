@@ -1,10 +1,17 @@
 #ifndef __DLIST_IMPL_H__
 #define __DLIST_IMPL_H__
+#include <iostream>
 #include "dlist.h"
 
-class emptyList{
-
-};
+template <class T>
+void Dlist<T>::printDlist(){
+	node *it = this->first;
+	while(it){
+		std::cout << *it->op << " ";
+		it = it->next;
+	}
+	std::cout << std::endl;
+}
 
 template <class T>
 bool Dlist<T>::isEmpty() const{
@@ -14,25 +21,31 @@ bool Dlist<T>::isEmpty() const{
 template <class T>
 void Dlist<T>::insertFront(T *op){
 	node *n = new node;
-	n->next = first;
+	n->next = this->first;
 	n->prev = nullptr;
 	n->op = op;
-	this->first = n;
 	if(isEmpty()){
 		this->last = n;
 	}
+	else{
+		this->first->prev = n;
+	}
+	this->first = n;
 }
     
 template <class T>
 void Dlist<T>::insertBack(T *op){
 	node *n = new node;
 	n->next = nullptr;
-	n->prev = last;
+	n->prev = this->last;
 	n->op = op;
-	this->last = n;
 	if(isEmpty()){
 		this->first = n;
 	}
+	else{
+		this->last->next = n;
+	}
+	this->last = n;
 }
 
 template <class T>
@@ -40,58 +53,84 @@ T *Dlist<T>::removeFront(){
 	if(isEmpty()){
 		throw emptyList();
 	}
+	node *victim = this->first;
+	T *tmp = victim->op;
 	this->first = this->first->next;
-
-
-}
-    // MODIFIES this
-    // EFFECTS removes and returns first object from non-empty list
-    //         throws an instance of emptyList if empty
-
-	T *removeBack();
-    // MODIFIES this
-    // EFFECTS removes and returns last object from non-empty list
-    //         throws an instance of emptyList if empty
-
-template <class T>
-Dlist<T>::Dlist(){
-
+	if(!this->first){
+		this->last = nullptr;
+	}
+	else{
+		this->first->prev = nullptr;
+	}
+	delete victim;
+	return tmp;
 }
 
 template <class T>
-Dlist<T>::Dlist(const Dlist &l){
+T *Dlist<T>::removeBack(){
+	if(isEmpty()){
+		throw emptyList();
+	}
+	node *victim = this->last;
+	T *tmp = victim->op;
+	this->last = this->last->prev;
+	if (!this->last){
+		this->first = nullptr;
+	}
+	else{
+		this->last->next = nullptr;
+	}
+	delete victim;
+	return tmp;
+}
+
+template <class T>
+Dlist<T>::Dlist(): first(nullptr), last(nullptr){
 
 }
 
 template <class T>
-Dlist<T>::Dlist &operator=(const Dlist &l){
+Dlist<T>::Dlist(const Dlist<T> &l){
+	// removeAll();
+	this->first = this->last = nullptr;
+	copyAll(l);
+}
 
+template <class T>
+Dlist<T> & Dlist<T>::operator=(const Dlist<T> &l){
+	removeAll();
+	copyAll(l);
+	return *this;
 }
 
 template <class T>
 Dlist<T>::~Dlist(){
-
+	removeAll();
 }
 
-void removeAll();
-    // EFFECT: called by destructor/operator= to remove and destroy
-    //         all list elements
+template <class T>
+void Dlist<T>::removeAll(){
+	node *it = this->first;
+	while(it){
+		delete it->op;
+		node *victim = it;
+		it = it->next;
+		delete victim;
+	}
+	this->first = this->last = nullptr;
+}
 
-void copyAll(const Dlist &l);
-    // EFFECT: called by copy constructor/operator= to copy elements
-    //         from a source instance l to this instance
-};
-
-
-
-
-
-
-
-
-
-
-
-
+template <class T>
+void Dlist<T>::copyAll(const Dlist<T> &l){
+	removeAll();
+	if(!l.isEmpty()){
+		node *it = l.first;
+		while(it){
+			T *op_ = new T(*it->op);
+			insertBack(op_);
+			it = it->next;
+		}
+	}
+}
 
 #endif

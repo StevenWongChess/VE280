@@ -12,7 +12,7 @@ class Dlist
     // OVERVIEW: contains a double-ended list of Objects
 
  public:
-
+    void printDlist();
     // Operational methods
 
     bool isEmpty() const;
