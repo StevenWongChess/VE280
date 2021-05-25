@@ -33,13 +33,14 @@ int main(int argc, char **argv) {
     // Test cord_sub, where substr is the complete string
     cord_t c6 = cord_new("012345");
     cord_t c7 = cord_sub(c6, 0, cord_length(c6));
-    assert(c7 == c6);
+    cout << cord_tostring(c7) << endl;
+    assert(cord_tostring(c7) == cord_tostring(c6));
 
     // Test cord_sub, where substr is represented by one child node
     cord_t c8 = cord_new("6789");
     cord_t c9 = cord_join(c6, c8);
     cord_t c10 = cord_sub(c9, 6, 10);
-    assert(c10 == c8);
+    assert(cord_tostring(c8) == cord_tostring(c10));
 
     // Test the three examples of cord_sub in README.md
     cord_t R = cord_join(cord_join(cord_new("t"), cord_new("otally")), cord_join(cord_new("efficien"), cord_new("t")));
@@ -51,14 +52,14 @@ int main(int argc, char **argv) {
     cord_print(R1);
     cout << endl;
     assert(cord_tostring(R1) == "otallyefficient");
-    assert(R1->left == R->left->right);
-    assert(R1->right == R->right);
+    assert(cord_tostring(R1->left) == cord_tostring(R->left->right));
+    assert(cord_tostring(R1->right) == cord_tostring(R->right));
 
     cord_t R2 = cord_sub(R, 1, 11);
     cord_print(R2);
     cout << endl;
     assert(cord_tostring(R2) == "otallyeffi");
-    assert(R2->left == R->left->right);
+    assert(cord_tostring(R2->left) == cord_tostring(R->left->right));
 
     cord_t R3 = cord_sub(R, 2, 11);
     cord_print(R3);
