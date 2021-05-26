@@ -20,6 +20,8 @@ Feeling this course useful, I redo all the lab assignments and project in year 2
 
 In one word, old RC classes for knowledges and new RC/labs for practice.
 
+If you are interested in strict type system and **formal verification**. You can start with [Software Foundation Volumn 1](https://softwarefoundations.cis.upenn.edu/lf-current/Preface.html). This course is also [CSE-505](https://sites.google.com/cs.washington.edu/cse-505-18au/home) available online. [Standard Library](https://coq.inria.fr/library/index.html) for Coq can be found here. You can also have a better understanding of Coq through [Youku](https://v.youku.com/v_show/id_XMzIzOTkyMDI4NA==). 
+
 #### Honor Code
 
 Pls respect the honor code and NEVER reuse these code.
