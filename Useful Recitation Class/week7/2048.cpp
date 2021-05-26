@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
     }
 
     Game game(height, width, tiles, numTiles);
-    game.debugGrid();
+    //game.debugGrid();
     game.printGame();
 
     while (true) {
@@ -88,10 +88,12 @@ int main(int argc, char *argv[]) {
         if (exit) break;
         if (!valid) continue;
 
-        unsigned int points = game.collapseTiles(dir);
+        // unsigned int points = game.collapseTiles(dir);
         bool shifted = game.shiftTiles(dir);
+        unsigned int points = game.collapseTiles(dir);
+        // game.shiftTiles(dir);
         if (points || shifted) {
-            // game.newTile();
+            game.newTile();
         }
         game.printGame();
         if (game.checkWin()) {

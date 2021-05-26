@@ -70,12 +70,39 @@ bool Game::shiftTiles(Direction dir) {
 
 bool Game::checkWin() const {
     // TODO: Your implementation here
+    for(int i = 0; i < grid.getHeight(); i++){
+        for(int j = 0; i < grid.getWidth(); i++){
+            struct Point p = {i, j};
+            if(!grid.isEmpty(p) && grid.getSquare(p)->points >= WINPOINTS){
+                return true;
+            }
+        }
+    }
     return false;
 }
 
 bool Game::checkLose() const {
     // TODO: Your implementation here
-    return false;
+    for(int i = 0; i < grid.getHeight(); i++){
+        for(int j = 0; j < grid.getWidth(); j++){
+            struct Point p = {i, j};
+            if(grid.isEmpty(p))
+                return false;
+        }
+    }
+    for(int i = 0; i < 4; i++){
+        Grid tmp(grid.getHeight(), grid.getWidth());
+        for (int i = 0; i < grid.getHeight(); i++) {
+            for (int j = 0; j < grid.getWidth(); j++) {
+                struct Point p = {i, j};
+                tmp.setSquare(p, grid.getSquare(p));
+            }
+        }
+        if(tmp.collapseTiles(static_cast<Direction>(i)) > 0){
+            return false;
+        }
+    }
+    return true;
 }
 
 void Game::printWin() const {
