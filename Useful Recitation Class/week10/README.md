@@ -27,6 +27,7 @@ During the game, the players take their turns one by one. There are three main p
    After playing, the player will have to discard cards in his hand such that the remaining number of cards is equal to his current health points. The function `Player::discardCards()` is called in this phase.
    
    
+
 The commands for HumanPlayers to control their characters are listed below. Commands 1 to 5 are general commands that can be executed anytime during a game. Commands 6 to 11 can only be used when prompted.
 
 1. `clear`
