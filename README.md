@@ -22,7 +22,9 @@ Week 8 is a summary of the previous RCs.
 
 - [ ] Week 9 is pretty hard. Remember to review. 
 
-Week 10 is about a game called LTK. 
+- [ ] Week 10 is about a game called LTK. 
+
+- [ ] Week 11 to be finished
 
 Week 12 is about skip list, I don't think we can reuse the code of assignment operator to write copy constructor without adding new member functions. If you can make it, pls do not hesitate to leave a message or pull a request.
 

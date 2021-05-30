@@ -1,8 +1,8 @@
 // class.h
 class Base {
-public: string str;
+public: string a;
 Base(const Base& base)
-: str(base.str) {
+: str(base.a) {
     cout << "cp Base\n"; }
 void print() {
     cout << a << endl; }
