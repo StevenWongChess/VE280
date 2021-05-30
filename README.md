@@ -12,6 +12,46 @@ Feeling this course useful, I redo all the lab assignments and project in year 2
 4. The RC slides contains **much much much MORE** contents than VE280 itself. On reviewing the recitation class slides, I am shocked by the countless amount of knowledge owned by the TAs. Great thanks to the whole TA group for bring us some big pictures and intro to other advanced topics.
 5. If you are students taking this course later than year 2019, you are lucky because you have new projects and labs to practice. Pls refer to [tc-imba](https://github.com/tc-imba/VE280) for description and starter files of the new projects. Pls refer to [LouieBHLu](https://github.com/LouieBHLu/VE280_2020_Summer/tree/master/Labs) for description and starter files of the new labs. 
 
+### More on Projects
+
+Description can be found in the corresponding files.
+
+**Project One: Integers!**
+
+​		This project will give you experience in using basic C++ constructs including I/O, arithmetic operators, branch, and loop.
+
+​		To run, type ```./Five Projects/Project1/test.sh```
+
+**Project Two: Recursion**
+
+​		This project will give you experience in writing recursive functions that operate on recursively defined data structures and mathematical abstractions.
+
+​		To run, type ```./Five Projects/Project2/test.sh``` and three test cases will be run automatically. 
+
+**Project Three: Simple World**
+
+​		To give you experience in using arrays, pointers, structs, enums, and different I/O streams and writing program that takes arguments.
+
+​		To run, type  ```./Five Projects/Project3/test.sh``` and test cases in ```./Five Projects/Projct3/world-tests``` will be run automatically. 
+
+**Project Four: Quarto**
+
+​		To give you experience in implementing abstract data types (ADTs), using interfaces (abstract base classes), and using interface/implementation inheritance.
+
+​		To run, type 
+
+```bash
+cd ./Five Projects/Project4
+make
+./p4 # add arguments as you like, e.g. ./p4 m m 10
+```
+
+**Project Five: List, Stack, and Queue**
+
+​		This project will give you experience in applying dynamic memory management, implementing a template container class (the double‐ended, doubly‐linked list, or Dlist), and using the at-most‐once invariant and existence, ownership, and conservation rules to implement two simple applications using this structure.
+
+​		To run, first uncomment the commands in ```./Five Projects/Project5/test.sh``` and then run it. ```valgrind --leak-check=full``` is used to check memory leak. To install valgrind on Linux, type ```sudo apt-get install valgrind```.
+
 ### More on Recitation Class
 
 In one word, old RC classes for knowledges and new RC/labs for practice.
@@ -22,7 +62,7 @@ Week 8 is a summary of the previous RCs.
 
 - [ ] Week 9 is pretty hard. Remember to review. 
 
-- [ ] Week 10 is about a game called LTK. 
+- [ ] Week 10 is about a game called LTK, to be finished. 
 
 - [ ] Week 11 to be finished
 
