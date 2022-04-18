@@ -1,5 +1,13 @@
 ## Hi, wc to VE280, Programming & Elem. Data Structures.
 
+An update on 4/18/2022:
+
+After reading `C++ Primer`, I realised that VE280 is completely outdated and useless, the best way to learn this course would be to read the above book and just code some stuff.
+
+Here is my [Notes](https://github.com/StevenWongChess/VE280/blob/main/c%2B%2B_primer_notes.md) for `C++ Primer`, pls feel free to make pull requests and star it!!!
+
+<hr>
+
 ### Introduction
 
 Feeling this course useful, I redo all the lab assignments and project in year 2021. All these are written by C++ using flag ```-std=c++11```. 
